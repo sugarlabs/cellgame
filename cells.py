@@ -26,6 +26,8 @@ from sprites import *
 from colors import *
 from random import *
 
+from gettext import gettext as _
+
 ################################################################################
 # Game
 ################################################################################
@@ -238,22 +240,22 @@ class Game():
         self.flashing_text = Group((prompt_text))       
 
     def help(self):
-        a = Text("Try and get 1 of species in the yellow escape area.", 
-                 size = int(60))
-        b = Text("Click a cell to send the guard there.", 
-                 size = int(60))
+        a = Text(_("Try and get 1 of species in the yellow escape area."), 
+                 size = int(50))
+        b = Text(_("Click a cell to send the guard there."), 
+                 size = int(50))
         b.rect.top = a.rect.bottom + 1
-        c = Text("Prisoners can escape iff the adjacent hiding space is",
-                 size = int(60))
+        c = Text(_("Prisoners can escape iff the adjacent hiding space is"),
+                 size = int(50))
         c.rect.top = b.rect.bottom + 1
-        d = Text("    red and empty or green and occupied.", 
-                 size = int(60))
+        d = Text('    ' + _("red and empty or green and occupied."), 
+                 size = int(50))
         d.rect.top = c.rect.bottom + 1
-        e = Text("Hit 'Esc' to return to the menu.", 
-                 size = int(60))
+        e = Text(_("Hit 'Esc' to return to the menu."), 
+                 size = int(50))
         e.rect.top = d.rect.bottom + 1
-        f = Text("Press 'r' to reset the current game", 
-                 size = int(60))
+        f = Text(_("Press 'r' to reset the current game"), 
+                 size = int(50))
         f.rect.top = e.rect.bottom + 1
         text = Group((a, b, c, d, e, f))
 
@@ -307,9 +309,9 @@ class Game():
                 
             if self.cell_count == 9:
                 self.background.fill(black)
-                text1 = Text("Congratulations", color = white, size = 120)
-                text2 = Text("You finished in " + str(self.move_count) +
-                             " moves.", color = white, size = 60)
+                text1 = Text(_("Congratulations"), color = white, size = 120)
+                text2 = Text(_("You finished in %s moves.") % str(self.move_count),
+                             color = white, size = 60)
                 text2.rect.top = text1.rect.bottom + 10
                 self.text = Group((text1, text2))
             

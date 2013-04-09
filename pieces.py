@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Cells.  If not, see <http://www.gnu.org/licenses/>.
 
-import math, pygame
+import math
+import pygame
 from pygame.locals import *
 from sprites import *
 from colors import *
