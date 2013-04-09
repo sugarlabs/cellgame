@@ -1,0 +1,7 @@
+*.pyc
+*.bak
+*.xo
+*.pyo
+*.py~
+MANIFEST
+
