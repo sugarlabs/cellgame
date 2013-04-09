@@ -295,9 +295,7 @@ class Game():
                     self.running = False
                 # and this one is for the "ESC" key
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.running = False
-                    elif self.cell_count == 2 and not self.new_game:
+                    if self.cell_count == 2 and not self.new_game:
                         self.new_game = True
 
             if self.new_game == True:
