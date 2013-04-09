@@ -1,6 +1,6 @@
 [Activity]
 name = cells
-service_name = edu.centenary.CellManagement
+bundle_id = edu.centenary.CellManagement
 icon = cellgame
 activity_version = 2
 show_launcher = yes
