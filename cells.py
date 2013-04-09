@@ -1,0 +1,314 @@
+#! /usr/bin/env python
+
+# 'Cells' writen by Nolan Baker - September 18, 2008
+# based on the logic puzzle 'Cell Management' by Dr. Mark Goadrich
+
+# Cells is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Cells is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Cells.  If not, see <http://www.gnu.org/licenses/>.
+
+import math, pygame, olpcgames
+from pygame.locals import *
+from pieces import *
+from sprites import *
+from colors import *
+from random import *
+
+################################################################################
+# Game
+################################################################################
+
+class Game():
+    def __init__(self, fps = 30):
+        pygame.init()
+
+	self.screen = pygame.display.set_mode((1200,900))
+
+        # time stuff
+        self.clock = pygame.time.Clock()
+        self.fps = fps
+     
+        # how many cells
+        self.cell_count = 2
+
+        # let's keep score
+        self.move_count = 0
+
+    def dist(self, x1, y1, x2, y2):
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    
+    def polToCart(self, r, angle):
+        # here the center is (512, 384)
+        angle *= math.pi / 180.0
+        x = int(r * math.cos(angle)) + 600
+        y = int(r * math.sin(angle)) + 450
+        return x, y
+        
+    def drawBoard(self):
+        # this is the giant colorful thing you see when you start the game
+        pos = (600, 450)
+        pygame.draw.circle(self.background, black, pos, 354)
+        pygame.draw.circle(self.background, (0,255,255), pos, 350)
+        pygame.draw.circle(self.background, black, pos, 254)
+        pygame.draw.circle(self.background, blue, pos, 250)
+        pygame.draw.circle(self.background, black, pos, 89)
+        pygame.draw.circle(self.background, yellow, pos, 85)
+
+    def setupBoard(self):
+	# make board
+        self.background = pygame.Surface(self.screen.get_size()).convert()
+        r, g, b = randint(50, 255), 0, randint(50, 150)
+        self.background.fill((r,g,b))
+        self.drawBoard()
+
+        # make pieces
+        self.escArea = EscapeArea(self)
+        
+	# a list that corresponds to a hiding space's allignment
+        # weather a hiding space is hostile or friendly
+        hf = ["h", "f"] * (self.cell_count / 2) # <- this gives us an int
+        if self.cell_count % 2 == 1:
+            hf += ["f"]
+        shuffle(hf)
+            
+        # a list that keeps track of cells
+        self.cells = []
+
+	# put the cells in the list
+        for i in range(0, self.cell_count):
+            x = Cell(self, i)
+            self.cells.append(x)
+        
+	# create a list of numbers [1 : the number of cells)
+	# this is closed on the left
+        nums = range(1, self.cell_count)
+        shuffle(nums)
+
+        n = 0
+        while len(nums) != 0:
+            x = nums.pop(0)
+            y = Hideout(self, x, self.cells[x], hf.pop())
+            self.cells[n].setAdjHS(y)
+            self.cells[x].setMyHS(y)
+            n = x
+
+        y = Hideout(self, 0, self.cells[0], hf.pop())
+        self.cells[n].setAdjHS(y)
+        self.cells[0].setMyHS(y)
+       
+        # now shuffle the cells (and effectively the hiding spaces)
+        # this game is not solvable if the number of cells mod 4
+        # is 0 or 1 and the corresponding hiding space
+        # for each cell is the hiding space to the right of it
+        # so we shuffle extra if it happens ;)
+        solvable = False
+        while not solvable:
+            if self.cell_count % 4 == (2 or 3):
+                solvable == True
+                break             
+            count = 0
+            shuffle(self.cells)
+            for i in range(0, self.cell_count):
+                a = self.cells[i].species 
+                b = self.cells[(i + 1) % self.cell_count].adj_hs.species
+                if a == b:
+                    count += 1
+                else:
+                    solvable == True
+                    break
+            if count != self.cell_count:
+                solvable = True
+
+        # and let the cells and hiding spaces know where they've been put
+        for j in range(0, self.cell_count):
+            a = self.cells[j]
+            a.seti(j)
+            a.getAdjHS().seti(j)
+            angle = (((360.0 / self.cell_count) * j) - 90) % 360
+            x1, y1 = self.polToCart(245, angle)
+            x2, y2 = self.polToCart(140, angle)
+            a.setPos(x1, y1)
+            a.getAdjHS().setPos(x2, y2)
+
+        # lastly... sprites
+        self.guard = Guard(self)
+        self.guards = Group((self.guard))
+        for i in self.cells:
+            i.makePrisoners()
+
+    def resetGame(self):
+         already_reset = True
+         for cell in self.cells:
+             if len(cell.prisoners) != 2:
+                 already_reset = False
+         if not already_reset:
+             self.move_count += 1
+             for cell in self.cells:
+                 cell.reset()
+       
+    def gameloop(self):
+        self.setupBoard()
+        playing = True
+        while playing:
+            self.clock.tick(self.fps)
+
+            text1 = Text(str(self.move_count), 
+                        size = int(35), 
+                        color = black)
+            text1.rect.center = (600, 450)
+            text2 = Text("(h)elp", size = 50)
+            text2.rect.topleft = (10, 10)
+            self.text = Group((text1, text2))
+
+            if (len(self.escArea.prisoners.sprites()) == self.cell_count
+                and self.guard.moving == False):
+                pygame.time.wait(3000)
+                playing = False
+
+            # Handle Input Events
+            for event in pygame.event.get():
+                # this one is for the box in the top right marked X
+                if event.type == QUIT:
+                    playing, self.running = False, False
+                # and this one is for the "ESC" key
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.move_count = 0
+                        playing = False
+                        self.makeMenu()
+                        self.cell_count = 1
+                    if event.key == K_r:
+                        self.resetGame()
+                    elif event.key == K_h:
+                        self.help()
+       
+            # update sprites
+            self.guards.update()
+            self.escArea.prisoners.update()
+            for i in range(0,self.cell_count):
+                self.cells[i].prisoners.update()
+                self.cells[i].getAdjHS().prisoners.update()
+                self.cells[i].text.update()
+                
+            # draw everything
+            self.screen.blit(self.background, (0, 0))
+            self.escArea.prisoners.draw(self.screen)
+            for i in range(0,self.cell_count):
+                a = self.cells[i]
+                a.text.draw(self.screen)
+                a.getAdjHS().text.draw(self.screen)
+                a.prisoners.draw(self.screen)
+                a.getAdjHS().prisoners.draw(self.screen)
+            self.guards.draw(self.screen)
+            self.text.draw(self.screen)
+
+            # finally, refresh the screen
+            pygame.display.flip()
+    
+    def makeMenu(self):
+        self.new_game = False
+        self.background = pygame.Surface(self.screen.get_size()).convert()
+        self.background.fill(yellow)
+        cell_text = Text("Cells", size = int(160))
+        cell_text.rect.center = ((600,450))
+        self.text = Group((cell_text))
+
+        prompt_text = Text("press any key to begin", size = int(35))
+        prompt_text.rect.center = (600,530)
+        self.flashing_text = Group((prompt_text))       
+
+    def help(self):
+        a = Text("Try and get 1 of species in the yellow escape area.", 
+                 size = int(60))
+        b = Text("Click a cell to send the guard there.", 
+                 size = int(60))
+        b.rect.top = a.rect.bottom + 1
+        c = Text("Prisoners can escape iff the adjacent hiding space is",
+                 size = int(60))
+        c.rect.top = b.rect.bottom + 1
+        d = Text("    red and empty or green and occupied.", 
+                 size = int(60))
+        d.rect.top = c.rect.bottom + 1
+        e = Text("Hit 'Esc' to return to the menu.", 
+                 size = int(60))
+        e.rect.top = d.rect.bottom + 1
+        f = Text("Press 'r' to reset the current game", 
+                 size = int(60))
+        f.rect.top = e.rect.bottom + 1
+        text = Group((a, b, c, d, e, f))
+
+        helping = True
+        while helping:
+            self.screen.fill(white)   
+            text.draw(self.screen)
+
+            for event in pygame.event.get():
+                # this one is for the box in the top right marked X
+                if event.type == QUIT:
+                    self.running = False
+                # and this one is for the "ESC" key
+                if event.type == KEYDOWN and event.key == K_ESCAPE:
+                        helping = False
+
+            pygame.display.flip()
+     
+    def mainloop(self):
+        self.makeMenu()
+        self.running = True
+        count = 0
+        while self.running:
+            self.clock.tick(self.fps)
+
+            self.screen.blit(self.background, (0, 0))
+
+            for event in pygame.event.get():
+                # this one is for the box in the top right marked X
+                if event.type == QUIT:
+                    self.running = False
+                # and this one is for the "ESC" key
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.running = False
+                    elif self.cell_count == 2 and not self.new_game:
+                        self.new_game = True
+
+            if self.new_game == True:
+                if self.cell_count == 9:
+                    self.new_game = False
+                self.gameloop()
+                self.cell_count += 1
+                
+            if self.cell_count == 9:
+                self.background.fill(black)
+                text1 = Text("Congratulations", color = white, size = 120)
+                text2 = Text("You finished in " + str(self.move_count) +
+                             " moves.", color = white, size = 60)
+                text2.rect.top = text1.rect.bottom + 10
+                self.text = Group((text1, text2))
+            
+            self.text.draw(self.background)
+            
+           
+            if self.cell_count == 2:
+                count += 1
+                if (count / (self.fps / 2)) % 2 == 1:
+                    self.flashing_text.draw(self.screen)
+                    
+            pygame.display.flip()
+
+def main():
+    cells = Game()
+    cells.mainloop()
+
+if __name__ == "__main__":
+    main()
+pygame.quit ()

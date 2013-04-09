@@ -1,7 +1,7 @@
 [Activity]
-name = cellgame
+name = cells
 service_name = edu.centenary.CellManagement
 icon = cellgame
-activity_version = 1
+activity_version = 2
 show_launcher = yes
 exec = sugar-activity activity.Activity
