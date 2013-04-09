@@ -16,9 +16,8 @@
 
 import math
 import pygame
-from pygame.locals import *
-from colors import *
-from random import *
+from colors import red, yellow, black, grey, white
+from random import randint
 
 ################################################################################
 # the Super Group... because regular groups aren't good enough
@@ -36,8 +35,8 @@ class Text(pygame.sprite.Sprite):
     def __init__(self, text, size, color = black):
         pygame.sprite.Sprite.__init__(self)
         default = pygame.font.get_default_font()
-	font = pygame.font.Font(default, size)
-	self.original = font.render(text, True, color)
+        font = pygame.font.Font(default, size)
+        self.original = font.render(text, True, color)
         self.image = self.original.copy()
         self.rect = self.image.get_rect()
 

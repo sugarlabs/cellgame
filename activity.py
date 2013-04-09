@@ -19,10 +19,8 @@
 import gtk
 from sugar.activity import activity
 from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.graphics.toolbutton import ToolButton
 from sugar.activity.widgets import ActivityToolbarButton
 from sugar.activity.widgets import StopButton
-from sugar.graphics.toolbarbox import ToolbarButton
 import sugargame.canvas
 
 import cells

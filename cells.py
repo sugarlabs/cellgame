@@ -20,11 +20,10 @@
 import gtk
 import math
 import pygame
-from pygame.locals import *
-from pieces import *
-from sprites import *
-from colors import *
-from random import *
+from random import randint, shuffle
+from pieces import EscapeArea, Cell, Hideout
+from sprites import Text, Group, Guard
+from colors import blue, yellow, black, white
 
 from gettext import gettext as _
 
@@ -190,18 +189,18 @@ class Game():
             # Handle Input Events
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     playing, self.running = False, False
                 # and this one is for the "ESC" key
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
                         self.move_count = 0
                         playing = False
                         self.makeMenu()
                         self.cell_count = 1
-                    if event.key == K_r:
+                    if event.key == pygame.K_r:
                         self.resetGame()
-                    elif event.key == K_h:
+                    elif event.key == pygame.K_h:
                         self.help()
        
             # update sprites
@@ -269,10 +268,10 @@ class Game():
 
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     self.running = False
                 # and this one is for the "ESC" key
-                if event.type == KEYDOWN and event.key == K_ESCAPE:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         helping = False
 
             pygame.display.flip()
@@ -292,11 +291,11 @@ class Game():
 
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     self.running = False
                 # and this one is for the "ESC" key
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
                         self.running = False
                     elif self.cell_count == 2 and not self.new_game:
                         self.new_game = True
