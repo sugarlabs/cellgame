@@ -41,7 +41,7 @@ class Game():
 
         self.screen = pygame.display.get_surface()
         if not(self.screen):
-            self.screen = pygame.display.set_mode((800, 800))
+            self.screen = pygame.display.set_mode((1200, 800))
 
         # time stuff
         self.clock = pygame.time.Clock()
@@ -329,4 +329,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-pygame.quit ()
