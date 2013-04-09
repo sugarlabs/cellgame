@@ -1,22 +1,25 @@
 #! /usr/bin/env python
-
+# -*- coding: utf-8 -*-
+#
 # 'Cells' writen by Nolan Baker - September 18, 2008
 # based on the logic puzzle 'Cell Management' by Dr. Mark Goadrich
-
+#
 # Cells is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-
+#
 # Cells is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+#
 # You should have received a copy of the GNU General Public License
 # along with Cells.  If not, see <http://www.gnu.org/licenses/>.
 
-import math, pygame, olpcgames
+import gtk
+import math
+import pygame
 from pygame.locals import *
 from pieces import *
 from sprites import *
@@ -28,15 +31,20 @@ from random import *
 ################################################################################
 
 class Game():
+
     def __init__(self, fps = 30):
+        self.fps = fps
+
+    def load_all(self):
         pygame.init()
 
-	self.screen = pygame.display.set_mode((1200,900))
+        self.screen = pygame.display.get_surface()
+        if not(self.screen):
+            self.screen = pygame.display.set_mode((800, 800))
 
         # time stuff
         self.clock = pygame.time.Clock()
-        self.fps = fps
-     
+             
         # how many cells
         self.cell_count = 2
 
@@ -64,7 +72,7 @@ class Game():
         pygame.draw.circle(self.background, yellow, pos, 85)
 
     def setupBoard(self):
-	# make board
+        # make board
         self.background = pygame.Surface(self.screen.get_size()).convert()
         r, g, b = randint(50, 255), 0, randint(50, 150)
         self.background.fill((r,g,b))
@@ -73,7 +81,7 @@ class Game():
         # make pieces
         self.escArea = EscapeArea(self)
         
-	# a list that corresponds to a hiding space's allignment
+        # a list that corresponds to a hiding space's allignment
         # weather a hiding space is hostile or friendly
         hf = ["h", "f"] * (self.cell_count / 2) # <- this gives us an int
         if self.cell_count % 2 == 1:
@@ -83,13 +91,13 @@ class Game():
         # a list that keeps track of cells
         self.cells = []
 
-	# put the cells in the list
+        # put the cells in the list
         for i in range(0, self.cell_count):
             x = Cell(self, i)
             self.cells.append(x)
         
-	# create a list of numbers [1 : the number of cells)
-	# this is closed on the left
+        # create a list of numbers [1 : the number of cells)
+        # this is closed on the left
         nums = range(1, self.cell_count)
         shuffle(nums)
 
@@ -174,6 +182,9 @@ class Game():
                 pygame.time.wait(3000)
                 playing = False
 
+            while gtk.events_pending():
+                gtk.main_iteration()
+
             # Handle Input Events
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
@@ -251,6 +262,9 @@ class Game():
             self.screen.fill(white)   
             text.draw(self.screen)
 
+            while gtk.events_pending():
+                gtk.main_iteration()
+
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
                 if event.type == QUIT:
@@ -262,6 +276,7 @@ class Game():
             pygame.display.flip()
      
     def mainloop(self):
+        self.load_all()
         self.makeMenu()
         self.running = True
         count = 0
@@ -269,6 +284,9 @@ class Game():
             self.clock.tick(self.fps)
 
             self.screen.blit(self.background, (0, 0))
+
+            while gtk.events_pending():
+                gtk.main_iteration()
 
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
@@ -311,4 +329,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-pygame.quit ()
+
+pygame.quit ()
