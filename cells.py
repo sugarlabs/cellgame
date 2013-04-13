@@ -239,22 +239,23 @@ class Game():
         self.flashing_text = Group((prompt_text))       
 
     def help(self):
+        t = 40
         a = Text(_("Try and get 1 of species in the yellow escape area."), 
-                 size = int(50))
+                 size = t)
         b = Text(_("Click a cell to send the guard there."), 
-                 size = int(50))
+                 size = t)
         b.rect.top = a.rect.bottom + 1
         c = Text(_("Prisoners can escape iff the adjacent hiding space is"),
-                 size = int(50))
+                 size = t)
         c.rect.top = b.rect.bottom + 1
         d = Text('    ' + _("red and empty or green and occupied."), 
-                 size = int(50))
+                 size = t)
         d.rect.top = c.rect.bottom + 1
         e = Text(_("Hit 'Esc' to return to the menu."), 
-                 size = int(50))
+                 size = t)
         e.rect.top = d.rect.bottom + 1
         f = Text(_("Press 'r' to reset the current game"), 
-                 size = int(50))
+                 size = t)
         f.rect.top = e.rect.bottom + 1
         text = Group((a, b, c, d, e, f))
 

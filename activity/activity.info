@@ -1,7 +1,7 @@
 [Activity]
 name = Cells
 bundle_id = edu.centenary.CellManagement
-icon = cellgame
+icon = cellgame.sugar
 activity_version = 3
 show_launcher = yes
 exec = sugar-activity activity.Activity
