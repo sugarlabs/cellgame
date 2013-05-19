@@ -24,6 +24,7 @@ from random import randint, shuffle
 from pieces import EscapeArea, Cell, Hideout
 from sprites import Text, Group, Guard
 from colors import blue, yellow, black, white
+import cursor
 
 from gettext import gettext as _
 
@@ -35,10 +36,11 @@ class Game():
 
     def __init__(self, fps = 30):
         self.fps = fps
+        self.cursor = pygame.cursors.compile(cursor.cursor_data)
 
     def load_all(self):
         pygame.init()
-
+        pygame.mouse.set_cursor((32,32), (1,1), *self.cursor)
         self.screen = pygame.display.get_surface()
         if not(self.screen):
             self.screen = pygame.display.set_mode((1200, 800))
