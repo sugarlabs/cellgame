@@ -36,14 +36,18 @@ class Game():
 
     def __init__(self, fps = 30):
         self.fps = fps
-        self.cursor = pygame.cursors.compile(cursor.cursor_data)
 
     def load_all(self):
         pygame.init()
+        self.cursor = pygame.cursors.compile(cursor.cursor_data)
         pygame.mouse.set_cursor((32,32), (1,1), *self.cursor)
+        info = pygame.display.Info()
+        self.ScreenWidth = info.current_w
+        self.ScreenHeight = info.current_h
         self.screen = pygame.display.get_surface()
         if not(self.screen):
-            self.screen = pygame.display.set_mode((1200, 800))
+            self.screen = pygame.display.set_mode((self.ScreenWidth, 
+                                        self.ScreenHeight), pygame.FULLSCREEN)
 
         # time stuff
         self.clock = pygame.time.Clock()
