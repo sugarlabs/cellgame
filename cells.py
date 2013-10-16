@@ -180,7 +180,7 @@ class Game():
                         size = int(35), 
                         color = black)
             text1.rect.center = (600, 450)
-            text2 = Text("(h)elp", size = 50)
+            text2 = Text(_("(h)elp"), size = 50)
             text2.rect.topleft = (10, 10)
             self.text = Group((text1, text2))
 
@@ -236,11 +236,11 @@ class Game():
         self.new_game = False
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill(yellow)
-        cell_text = Text("Cells", size = int(160))
+        cell_text = Text(_("Cells"), size = int(160))
         cell_text.rect.center = ((600,450))
         self.text = Group((cell_text))
 
-        prompt_text = Text("press any key to begin", size = int(35))
+        prompt_text = Text(_("press any key to begin"), size = int(35))
         prompt_text.rect.center = (600,530)
         self.flashing_text = Group((prompt_text))       
 
