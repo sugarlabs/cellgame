@@ -6,3 +6,4 @@ activity_version = 4
 show_launcher = yes
 exec = sugar-activity activity.Activity
 summary = This game is based on the mechanisms present in gene regulatory networks
+repository = https://github.com/sugarlabs/cellgame.git

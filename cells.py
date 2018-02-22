@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Cells.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import math
 import pygame
 from random import randint, shuffle
@@ -189,8 +191,8 @@ class Game():
                 pygame.time.wait(3000)
                 playing = False
 
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             # Handle Input Events
             for event in pygame.event.get():
@@ -270,8 +272,8 @@ class Game():
             self.screen.fill(white)   
             text.draw(self.screen)
 
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
@@ -293,8 +295,8 @@ class Game():
 
             self.screen.blit(self.background, (0, 0))
 
-            while gtk.events_pending():
-                gtk.main_iteration()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
             for event in pygame.event.get():
                 # this one is for the box in the top right marked X
