@@ -107,7 +107,7 @@ class Game():
         
         # create a list of numbers [1 : the number of cells)
         # this is closed on the left
-        nums = range(1, self.cell_count)
+        nums = list(range(1, self.cell_count))
         shuffle(nums)
 
         n = 0
