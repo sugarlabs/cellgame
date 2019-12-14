@@ -139,7 +139,7 @@ class Translator(object):
 
     def _keymods(self):
         mod = 0
-        for key_val, mod_val in self.mod_map.items():
+        for key_val, mod_val in list(self.mod_map.items()):
             mod |= self.__keystate[key_val] and mod_val
         return mod
 
