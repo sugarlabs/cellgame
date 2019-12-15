@@ -172,7 +172,7 @@ class Guard(MovingSprite):
     def path(self, i):
         d = int(350)
         angle = []
-        for j in range(-90, 400, (360 / self.game.cell_count)):
+        for j in range(-90, 400, (360 // self.game.cell_count)):
             angle.append(j)
         x = (int(d * math.cos(angle[i] * math.pi / 180.0)) + 600)
         y = (int(d * math.sin(angle[i] * math.pi / 180.0)) + 450)
