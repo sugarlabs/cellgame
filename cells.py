@@ -92,7 +92,7 @@ class Game():
         
         # a list that corresponds to a hiding space's allignment
         # weather a hiding space is hostile or friendly
-        hf = ["h", "f"] * (self.cell_count / 2) # <- this gives us an int
+        hf = ["h", "f"] * (self.cell_count // 2) # <- this gives us an int
         if self.cell_count % 2 == 1:
             hf += ["f"]
         shuffle(hf)
@@ -107,7 +107,7 @@ class Game():
         
         # create a list of numbers [1 : the number of cells)
         # this is closed on the left
-        nums = range(1, self.cell_count)
+        nums = list(range(1, self.cell_count))
         shuffle(nums)
 
         n = 0
