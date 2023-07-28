@@ -39,18 +39,6 @@ class Game():
     def __init__(self, fps = 30):
         self.fps = fps
 
-    def load_all(self):
-        pygame.init()
-        self.cursor = pygame.cursors.compile(cursor.cursor_data)
-        pygame.mouse.set_cursor((32,32), (1,1), *self.cursor)
-        info = pygame.display.Info()
-        self.ScreenWidth = info.current_w
-        self.ScreenHeight = info.current_h
-        self.screen = pygame.display.get_surface()
-        if not(self.screen):
-            self.screen = pygame.display.set_mode((self.ScreenWidth, 
-                                        self.ScreenHeight), pygame.FULLSCREEN)
-
         # time stuff
         self.clock = pygame.time.Clock()
              
@@ -235,7 +223,7 @@ class Game():
             pygame.display.flip()
     
     def makeMenu(self):
-        self.new_game = False
+        self.new_game = True
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill(yellow)
         cell_text = Text(_("Cells"), size = int(160))
@@ -286,12 +274,21 @@ class Game():
             pygame.display.flip()
      
     def mainloop(self):
-        self.load_all()
+
+        pygame.init()
+        self.cursor = pygame.cursors.compile(cursor.cursor_data)
+        pygame.mouse.set_cursor((32,32), (1,1), *self.cursor)
+        info = pygame.display.Info()
+        self.ScreenWidth = info.current_w
+        self.ScreenHeight = info.current_h
+        self.screen = pygame.display.get_surface()
+        if not(self.screen):
+            self.screen = pygame.display.set_mode((self.ScreenWidth,
+                                        self.ScreenHeight), pygame.FULLSCREEN)
         self.makeMenu()
         self.running = True
         count = 0
         while self.running:
-            self.clock.tick(self.fps)
 
             self.screen.blit(self.background, (0, 0))
 
@@ -329,7 +326,8 @@ class Game():
                 if (count / (self.fps / 2)) % 2 == 1:
                     self.flashing_text.draw(self.screen)
                     
-            pygame.display.flip()
+        pygame.display.flip()
+        self.clock.tick(self.fps)
 
 def main():
     cells = Game()
