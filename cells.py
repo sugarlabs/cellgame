@@ -196,6 +196,10 @@ class Game():
 
             # Handle Input Events
             for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = event.pos
+                    if text2.rect.collidepoint(mouse_pos):
+                        self.help()
                 # this one is for the box in the top right marked X
                 if event.type == pygame.QUIT:
                     playing, self.running = False, False
@@ -265,7 +269,10 @@ class Game():
         f = Text(_("Press 'r' to reset the current game"), 
                  size = t)
         f.rect.top = e.rect.bottom + 1
-        text = Group((a, b, c, d, e, f))
+        g = Text(_("Click here to exit help"), 
+                 size = t, color=(255, 0, 0))
+        g.rect.top = f.rect.bottom + 1
+        text = Group((a, b, c, d, e, f, g))
 
         helping = True
         while helping:
@@ -282,6 +289,10 @@ class Game():
                 # and this one is for the "ESC" key
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         helping = False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = event.pos
+                    if g.rect.collidepoint(mouse_pos):
+                        helping = False 
 
             pygame.display.flip()
      
