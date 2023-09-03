@@ -244,7 +244,7 @@ class Game():
 
         prompt_text = Text(_("press any key to begin"), size = int(35))
         prompt_text.rect.center = (600,530)
-        self.flashing_text = Group((prompt_text))       
+        self.flashing_text = Group((prompt_text))
 
     def help(self):
         t = 40
@@ -322,13 +322,12 @@ class Game():
                 self.text = Group((text1, text2))
             
             self.text.draw(self.background)
-            
-           
+
             if self.cell_count == 2:
                 count += 1
-                if (count / (self.fps / 2)) % 2 == 1:
+                if (count // (self.fps / 2)) % 2 == 1:
                     self.flashing_text.draw(self.screen)
-                    
+
             pygame.display.flip()
 
 def main():
