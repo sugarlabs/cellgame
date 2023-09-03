@@ -303,7 +303,7 @@ class Game():
                 if event.type == pygame.QUIT:
                     self.running = False
                 # and this one is for the "ESC" key
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                     if self.cell_count == 2 and not self.new_game:
                         self.new_game = True
 
