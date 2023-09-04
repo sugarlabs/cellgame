@@ -30,7 +30,7 @@ class Cell():
     def isSelected(self):
         m = pygame.mouse.get_pos()
         d = self.game.dist(m[0], m[1], self.x, self.y)
-        if d < 54:
+        if d < int(54 * self.game.scale):
             return True
    
     def seti(self, i):
@@ -40,11 +40,11 @@ class Cell():
         self.x = x
         self.y = y
 
-        pygame.draw.circle(self.game.background, black, (x, y), 54)
-        pygame.draw.circle(self.game.background, white, (x, y), 50)
+        pygame.draw.circle(self.game.background, black, (x, y), int(54 * self.game.scale))
+        pygame.draw.circle(self.game.background, white, (x, y), int(50 * self.game.scale))
 
-        text = Text(str(self.species + 1), size = 20)
-        text.rect.center = (self.x, self.y - 20)
+        text = Text(str(self.species + 1), size = int(20 * self.game.scale))
+        text.rect.center = (self.x, self.y - int(20 * self.game.scale))
         self.text = Group((text))
 
     def makePrisoners(self):
@@ -89,7 +89,7 @@ class EscapeArea():
     def __init__(self, game):
         self.game = game
         self.prisoners = Group()
-        self.prisoners.set_pos(600,450)
+        self.prisoners.set_pos(int(600 * self.game.scale), int(450 * self.game.scale))
         
     def addPrisoner(self, prisoner):
         self.prisoners.add(prisoner)
@@ -120,11 +120,11 @@ class Hideout():
         color = red
         if self.HorF == "f":
             color = green
-        pygame.draw.circle(self.game.background, black, (x,y), 54)
-        pygame.draw.circle(self.game.background, color, (x,y), 50)
+        pygame.draw.circle(self.game.background, black, (x,y), int(54 * self.game.scale))
+        pygame.draw.circle(self.game.background, color, (x,y), int(50 * self.game.scale))
 
-        text = Text(str(self.species + 1), size = 20, color = white)
-        text.rect.center = (self.x, self.y - 20)
+        text = Text(str(self.species + 1), size = int(20 * self.game.scale), color = white)
+        text.rect.center = (self.x, self.y - int(20 * self.game.scale))
         self.text = Group((text))
         
     def isOccupied(self):
