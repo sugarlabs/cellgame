@@ -25,25 +25,26 @@ import pygame
 from random import randint, shuffle
 from pieces import EscapeArea, Cell, Hideout
 from sprites import Text, Group, Guard
-from colors import blue, yellow, black, white
+from colors import blue, yellow, black, white, aqua
 import cursor
 
 from gettext import gettext as _
 
-################################################################################
+###############################################################################
 # Game
-################################################################################
+###############################################################################
+
 
 class Game():
 
-    def __init__(self, fps = 30):
+    def __init__(self, fps=30):
         self.fps = fps
         self.aspect_ratio = (4, 3)
 
     def load_all(self):
         pygame.init()
         self.cursor = pygame.cursors.compile(cursor.cursor_data)
-        pygame.mouse.set_cursor((32,32), (1,1), *self.cursor)
+        pygame.mouse.set_cursor((32, 32), (1, 1), *self.cursor)
         info = pygame.display.Info()
         self.ScreenWidth = info.current_w
         self.ScreenHeight = info.current_h
@@ -53,17 +54,19 @@ class Game():
         if new_height <= self.ScreenHeight:
             self.ScreenHeight = new_height
         else:
-            self.ScreenWidth = int(self.ScreenHeight * (aspect_width / aspect_height))
-        self.scale = self.ScreenWidth / 1200  # 1200x900(4/3) is the base resolution
+            aspect_ratio = aspect_width / aspect_height
+            self.ScreenWidth = int(self.ScreenHeight * (aspect_ratio))
+        self.scale = self.ScreenWidth / 1200
 
         self.screen = pygame.display.get_surface()
-        if not(self.screen):
-            self.screen = pygame.display.set_mode((self.ScreenWidth, 
-                                        self.ScreenHeight), pygame.FULLSCREEN)
+        if not (self.screen):
+            self.screen = pygame.display.set_mode((self.ScreenWidth,
+                                                   self.ScreenHeight),
+                                                  pygame.FULLSCREEN)
 
         # time stuff
         self.clock = pygame.time.Clock()
-             
+
         # how many cells
         self.cell_count = 2
 
@@ -72,7 +75,7 @@ class Game():
 
     def dist(self, x1, y1, x2, y2):
         return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-    
+
     def polToCart(self, r, angle):
         # here the center is (512, 384)
         angle *= math.pi / 180.0
@@ -84,7 +87,7 @@ class Game():
         # this is the giant colorful thing you see when you start the game
         pos = (self.ScreenWidth // 2, self.ScreenHeight // 2)
         pygame.draw.circle(self.background, black, pos, int(354 * self.scale))
-        pygame.draw.circle(self.background, (0,255,255), pos, int(350 * self.scale))
+        pygame.draw.circle(self.background, aqua, pos, int(350 * self.scale))
         pygame.draw.circle(self.background, black, pos, int(254 * self.scale))
         pygame.draw.circle(self.background, blue, pos, int(250 * self.scale))
         pygame.draw.circle(self.background, black, pos, int(89 * self.scale))
@@ -94,19 +97,19 @@ class Game():
         # make board
         self.background = pygame.Surface(self.screen.get_size()).convert()
         r, g, b = randint(50, 255), 0, randint(50, 150)
-        self.background.fill((r,g,b))
+        self.background.fill((r, g, b))
         self.drawBoard()
 
         # make pieces
         self.escArea = EscapeArea(self)
-        
+
         # a list that corresponds to a hiding space's allignment
         # weather a hiding space is hostile or friendly
-        hf = ["h", "f"] * (self.cell_count // 2) # <- this gives us an int
+        hf = ["h", "f"] * (self.cell_count // 2)  # <- this gives us an int
         if self.cell_count % 2 == 1:
             hf += ["f"]
         shuffle(hf)
-            
+
         # a list that keeps track of cells
         self.cells = []
 
@@ -114,7 +117,7 @@ class Game():
         for i in range(0, self.cell_count):
             x = Cell(self, i)
             self.cells.append(x)
-        
+
         # create a list of numbers [1 : the number of cells)
         # this is closed on the left
         nums = list(range(1, self.cell_count))
@@ -131,7 +134,7 @@ class Game():
         y = Hideout(self, 0, self.cells[0], hf.pop())
         self.cells[n].setAdjHS(y)
         self.cells[0].setMyHS(y)
-       
+
         # now shuffle the cells (and effectively the hiding spaces)
         # this game is not solvable if the number of cells mod 4
         # is 0 or 1 and the corresponding hiding space
@@ -140,17 +143,17 @@ class Game():
         solvable = False
         while not solvable:
             if self.cell_count % 4 == (2 or 3):
-                solvable == True
-                break             
+                solvable = True
+                break
             count = 0
             shuffle(self.cells)
             for i in range(0, self.cell_count):
-                a = self.cells[i].species 
+                a = self.cells[i].species
                 b = self.cells[(i + 1) % self.cell_count].adj_hs.species
                 if a == b:
                     count += 1
                 else:
-                    solvable == True
+                    solvable = True
                     break
             if count != self.cell_count:
                 solvable = True
@@ -173,31 +176,31 @@ class Game():
             i.makePrisoners()
 
     def resetGame(self):
-         already_reset = True
-         for cell in self.cells:
-             if len(cell.prisoners) != 2:
-                 already_reset = False
-         if not already_reset:
-             self.move_count += 1
-             for cell in self.cells:
-                 cell.reset()
-       
+        already_reset = True
+        for cell in self.cells:
+            if len(cell.prisoners) != 2:
+                already_reset = False
+        if not already_reset:
+            self.move_count += 1
+            for cell in self.cells:
+                cell.reset()
+
     def gameloop(self):
         self.setupBoard()
         playing = True
         while playing:
             self.clock.tick(self.fps)
 
-            text1 = Text(str(self.move_count), 
-                        size = int(35 * self.scale), 
-                        color = black)
+            text1 = Text(str(self.move_count),
+                         size=int(35 * self.scale),
+                         color=black)
             text1.rect.center = (int(600 * self.scale), int(450 * self.scale))
-            text2 = Text(_("(h)elp"), size = int(50 * self.scale))
+            text2 = Text(_("(h)elp"), size=int(50 * self.scale))
             text2.rect.topleft = (int(10 * self.scale), int(10 * self.scale))
             self.text = Group((text1, text2))
 
             if (len(self.escArea.prisoners.sprites()) == self.cell_count
-                and self.guard.moving == False):
+               and not self.guard.moving):
                 pygame.time.wait(3000)
                 playing = False
 
@@ -224,19 +227,19 @@ class Game():
                         self.resetGame()
                     elif event.key == pygame.K_h:
                         self.help()
-       
+
             # update sprites
             self.guards.update()
             self.escArea.prisoners.update()
-            for i in range(0,self.cell_count):
+            for i in range(0, self.cell_count):
                 self.cells[i].prisoners.update()
                 self.cells[i].getAdjHS().prisoners.update()
                 self.cells[i].text.update()
-                
+
             # draw everything
             self.screen.blit(self.background, (0, 0))
             self.escArea.prisoners.draw(self.screen)
-            for i in range(0,self.cell_count):
+            for i in range(0, self.cell_count):
                 a = self.cells[i]
                 a.text.draw(self.screen)
                 a.getAdjHS().text.draw(self.screen)
@@ -247,37 +250,40 @@ class Game():
 
             # finally, refresh the screen
             pygame.display.flip()
-    
+
     def makeMenu(self):
         self.new_game = False
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill(yellow)
-        cell_text = Text(_("Cells"), size = int(160 * self.scale))
-        cell_text.rect.center = ((int(600 * self.scale), int(450 * self.scale)))
+        cell_text = Text(_("Cells"), size=int(160 * self.scale))
+        cell_text.rect.center = (
+            (int(600 * self.scale), int(450 * self.scale)))
         self.text = Group((cell_text))
 
-        prompt_text = Text(_("press any key to begin"), size = int(35 * self.scale))
-        prompt_text.rect.center = (int(600 * self.scale), int(530 * self.scale))
-        self.flashing_text = Group((prompt_text))       
+        prompt_text = Text(
+            _("press any key to begin"), size=int(35 * self.scale))
+        prompt_text.rect.center = (
+            int(600 * self.scale), int(530 * self.scale))
+        self.flashing_text = Group((prompt_text))
 
     def help(self):
         t = int(40 * self.scale)
-        a = Text(_("Try and get 1 of species in the yellow escape area."), 
-                 size = t)
-        b = Text(_("Click a cell to send the guard there."), 
-                 size = t)
+        a = Text(_("Try and get 1 of species in the yellow escape area."),
+                 size=t)
+        b = Text(_("Click a cell to send the guard there."),
+                 size=t)
         b.rect.top = a.rect.bottom + 1
         c = Text(_("Prisoners can escape iff the adjacent hiding space is"),
-                 size = t)
+                 size=t)
         c.rect.top = b.rect.bottom + 1
-        d = Text('    ' + _("red and empty or green and occupied."), 
-                 size = t)
+        d = Text('    ' + _("red and empty or green and occupied."),
+                 size=t)
         d.rect.top = c.rect.bottom + 1
-        e = Text(_("Hit 'Esc' to return to the menu."), 
-                 size = t)
+        e = Text(_("Hit 'Esc' to return to the menu."),
+                 size=t)
         e.rect.top = d.rect.bottom + 1
-        f = Text(_("Press 'r' to reset the current game"), 
-                 size = t)
+        f = Text(_("Press 'r' to reset the current game"),
+                 size=t)
         f.rect.top = e.rect.bottom + 1
         g = Text(_("Click here to exit help"), 
                  size = t, color=(255, 0, 0))
@@ -286,7 +292,7 @@ class Game():
 
         helping = True
         while helping:
-            self.screen.fill(white)   
+            self.screen.fill(white)
             text.draw(self.screen)
 
             while Gtk.events_pending():
@@ -305,7 +311,7 @@ class Game():
                         helping = False 
 
             pygame.display.flip()
-     
+
     def mainloop(self):
         self.load_all()
         self.makeMenu()
@@ -328,17 +334,24 @@ class Game():
                     if self.cell_count == 2 and not self.new_game:
                         self.new_game = True
 
-            if self.new_game == True:
+            if self.new_game:
                 if self.cell_count == 9:
                     self.new_game = False
                 self.gameloop()
                 self.cell_count += 1
-                
+
             if self.cell_count == 9:
                 self.background.fill(black)
-                text1 = Text(_("Congratulations"), color = white, size = int(120 * self.scale))
-                text2 = Text(_("You finished in %s moves.") % str(self.move_count),
-                             color = white, size = int(60 * self.scale))
+
+                text1 = Text(_(
+                    "Congratulations"),
+                    color=white,
+                    size=int(120 * self.scale))
+                text2 = Text(_(
+                    "You finished in %s moves.") % str(self.move_count),
+                    color=white,
+                    size=int(60 * self.scale))
+
                 text2.rect.top = text1.rect.bottom + int(10 * self.scale)
                 self.text = Group((text1, text2))
 
@@ -350,9 +363,11 @@ class Game():
 
             pygame.display.flip()
 
+
 def main():
     cells = Game()
     cells.mainloop()
+
 
 if __name__ == "__main__":
     main()
