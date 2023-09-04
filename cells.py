@@ -38,6 +38,7 @@ class Game():
 
     def __init__(self, fps = 30):
         self.fps = fps
+        self.aspect_ratio = (4, 3)
 
     def load_all(self):
         pygame.init()
@@ -46,6 +47,15 @@ class Game():
         info = pygame.display.Info()
         self.ScreenWidth = info.current_w
         self.ScreenHeight = info.current_h
+
+        aspect_width, aspect_height = self.aspect_ratio
+        new_height = int(self.ScreenWidth * (aspect_height / aspect_width))
+        if new_height <= self.ScreenHeight:
+            self.ScreenHeight = new_height
+        else:
+            self.ScreenWidth = int(self.ScreenHeight * (aspect_width / aspect_height))
+        self.scale = self.ScreenWidth / 1200  # 1200x900(4/3) is the base resolution
+
         self.screen = pygame.display.get_surface()
         if not(self.screen):
             self.screen = pygame.display.set_mode((self.ScreenWidth, 
@@ -66,19 +76,19 @@ class Game():
     def polToCart(self, r, angle):
         # here the center is (512, 384)
         angle *= math.pi / 180.0
-        x = int(r * math.cos(angle)) + 600
-        y = int(r * math.sin(angle)) + 450
+        x = int(r * math.cos(angle)) + int(600 * self.scale)
+        y = int(r * math.sin(angle)) + int(450 * self.scale)
         return x, y
-        
+
     def drawBoard(self):
         # this is the giant colorful thing you see when you start the game
-        pos = (600, 450)
-        pygame.draw.circle(self.background, black, pos, 354)
-        pygame.draw.circle(self.background, (0,255,255), pos, 350)
-        pygame.draw.circle(self.background, black, pos, 254)
-        pygame.draw.circle(self.background, blue, pos, 250)
-        pygame.draw.circle(self.background, black, pos, 89)
-        pygame.draw.circle(self.background, yellow, pos, 85)
+        pos = (self.ScreenWidth // 2, self.ScreenHeight // 2)
+        pygame.draw.circle(self.background, black, pos, int(354 * self.scale))
+        pygame.draw.circle(self.background, (0,255,255), pos, int(350 * self.scale))
+        pygame.draw.circle(self.background, black, pos, int(254 * self.scale))
+        pygame.draw.circle(self.background, blue, pos, int(250 * self.scale))
+        pygame.draw.circle(self.background, black, pos, int(89 * self.scale))
+        pygame.draw.circle(self.background, yellow, pos, int(85 * self.scale))
 
     def setupBoard(self):
         # make board
@@ -151,8 +161,8 @@ class Game():
             a.seti(j)
             a.getAdjHS().seti(j)
             angle = (((360.0 / self.cell_count) * j) - 90) % 360
-            x1, y1 = self.polToCart(245, angle)
-            x2, y2 = self.polToCart(140, angle)
+            x1, y1 = self.polToCart(int(245 * self.scale), angle)
+            x2, y2 = self.polToCart(int(140 * self.scale), angle)
             a.setPos(x1, y1)
             a.getAdjHS().setPos(x2, y2)
 
@@ -179,11 +189,11 @@ class Game():
             self.clock.tick(self.fps)
 
             text1 = Text(str(self.move_count), 
-                        size = int(35), 
+                        size = int(35 * self.scale), 
                         color = black)
-            text1.rect.center = (600, 450)
-            text2 = Text(_("(h)elp"), size = 50)
-            text2.rect.topleft = (10, 10)
+            text1.rect.center = (int(600 * self.scale), int(450 * self.scale))
+            text2 = Text(_("(h)elp"), size = int(50 * self.scale))
+            text2.rect.topleft = (int(10 * self.scale), int(10 * self.scale))
             self.text = Group((text1, text2))
 
             if (len(self.escArea.prisoners.sprites()) == self.cell_count
@@ -242,16 +252,16 @@ class Game():
         self.new_game = False
         self.background = pygame.Surface(self.screen.get_size()).convert()
         self.background.fill(yellow)
-        cell_text = Text(_("Cells"), size = int(160))
-        cell_text.rect.center = ((600,450))
+        cell_text = Text(_("Cells"), size = int(160 * self.scale))
+        cell_text.rect.center = ((int(600 * self.scale), int(450 * self.scale)))
         self.text = Group((cell_text))
 
-        prompt_text = Text(_("press any key to begin"), size = int(35))
-        prompt_text.rect.center = (600,530)
-        self.flashing_text = Group((prompt_text))
+        prompt_text = Text(_("press any key to begin"), size = int(35 * self.scale))
+        prompt_text.rect.center = (int(600 * self.scale), int(530 * self.scale))
+        self.flashing_text = Group((prompt_text))       
 
     def help(self):
-        t = 40
+        t = int(40 * self.scale)
         a = Text(_("Try and get 1 of species in the yellow escape area."), 
                  size = t)
         b = Text(_("Click a cell to send the guard there."), 
@@ -326,14 +336,13 @@ class Game():
                 
             if self.cell_count == 9:
                 self.background.fill(black)
-                text1 = Text(_("Congratulations"), color = white, size = 120)
+                text1 = Text(_("Congratulations"), color = white, size = int(120 * self.scale))
                 text2 = Text(_("You finished in %s moves.") % str(self.move_count),
-                             color = white, size = 60)
-                text2.rect.top = text1.rect.bottom + 10
+                             color = white, size = int(60 * self.scale))
+                text2.rect.top = text1.rect.bottom + int(10 * self.scale)
                 self.text = Group((text1, text2))
-            
-            self.text.draw(self.background)
 
+            self.text.draw(self.background)
             if self.cell_count == 2:
                 count += 1
                 if (count // (self.fps / 2)) % 2 == 1:
@@ -347,4 +356,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
