@@ -32,4 +32,3 @@ cursor_data = (
     " XXX..XXX              XXXXXXXX ",
     "  XXXXXX                XXXXXX  ",
     "   XXXX                  XXXX   ")
-

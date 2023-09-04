@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# pieces.py is part of Cells. Cells is free software: you can 
-# redistribute it and/or modify it under the terms of the GNU 
-# General Public License as published by the Free Software Foundation, 
+# pieces.py is part of Cells. Cells is free software: you can
+# redistribute it and/or modify it under the terms of the GNU
+# General Public License as published by the Free Software Foundation,
 # either version 3 of the License, or (at your option) any later version.
 #
 # Cells is distributed in the hope that it will be useful,
@@ -18,21 +18,22 @@ import pygame
 from sprites import Group, Text, Prisoner
 from colors import red, green, black, white
 
-################################################################################
+###############################################################################
 # The Cells
-################################################################################
+###############################################################################
+
 
 class Cell():
     def __init__(self, game, species):
         self.game = game
         self.species = species
-    
+
     def isSelected(self):
         m = pygame.mouse.get_pos()
         d = self.game.dist(m[0], m[1], self.x, self.y)
         if d < int(54 * self.game.scale):
             return True
-   
+
     def seti(self, i):
         self.i = i
 
@@ -40,20 +41,24 @@ class Cell():
         self.x = x
         self.y = y
 
-        pygame.draw.circle(self.game.background, black, (x, y), int(54 * self.game.scale))
-        pygame.draw.circle(self.game.background, white, (x, y), int(50 * self.game.scale))
+        pygame.draw.circle(
+            self.game.background, black, (x, y), int(54 * self.game.scale))
+        pygame.draw.circle(
+            self.game.background, white, (x, y), int(50 * self.game.scale))
 
-        text = Text(str(self.species + 1), size = int(20 * self.game.scale))
+        text = Text(str(self.species + 1), size=int(20 * self.game.scale))
         text.rect.center = (self.x, self.y - int(20 * self.game.scale))
         self.text = Group((text))
 
     def makePrisoners(self):
         self.prisoners = Group()
         self.prisoners.set_pos(self.x, self.y)
-        self.prisoner1 = Prisoner(self.game, self.species, self.x, self.y, 'left')
-        self.prisoner2 = Prisoner(self.game, self.species, self.x, self.y, 'right')
+        self.prisoner1 = Prisoner(
+            self.game, self.species, self.x, self.y, 'left')
+        self.prisoner2 = Prisoner(
+            self.game, self.species, self.x, self.y, 'right')
         self.prisoners.add((self.prisoner1, self.prisoner2))
-    
+
     def reset(self):
         self.prisoner1.kill()
         self.prisoner2.kill()
@@ -70,34 +75,36 @@ class Cell():
 
     def getAdjHS(self):
         return self.adj_hs
-    
+
     def addPrisoner(self, prisoner):
         self.prisoners.add(prisoner)
 
     def update(self):
-        if (len(self.prisoners) != 0 and
-            self.getAdjHS().canHelp()):
+        if (len(self.prisoners) != 0 and self.getAdjHS().canHelp()):
             prisoner = self.prisoners.sprites()[0]
             self.prisoners.remove(prisoner)
             self.getMyHS().addPrisoner(prisoner)
 
-################################################################################
+###############################################################################
 # The Escape Area
-################################################################################
-        
+###############################################################################
+
+
 class EscapeArea():
     def __init__(self, game):
         self.game = game
         self.prisoners = Group()
-        self.prisoners.set_pos(int(600 * self.game.scale), int(450 * self.game.scale))
-        
+        self.prisoners.set_pos(
+            int(600 * self.game.scale), int(450 * self.game.scale))
+
     def addPrisoner(self, prisoner):
         self.prisoners.add(prisoner)
 
-################################################################################
+###############################################################################
 # The Hideout
-################################################################################
-           
+###############################################################################
+
+
 class Hideout():
     def __init__(self, game, species, cell, HorF):
         self.game = game
@@ -120,28 +127,31 @@ class Hideout():
         color = red
         if self.HorF == "f":
             color = green
-        pygame.draw.circle(self.game.background, black, (x,y), int(54 * self.game.scale))
-        pygame.draw.circle(self.game.background, color, (x,y), int(50 * self.game.scale))
+        pygame.draw.circle(
+            self.game.background, black, (x, y), int(54 * self.game.scale))
+        pygame.draw.circle(
+            self.game.background, color, (x, y), int(50 * self.game.scale))
 
-        text = Text(str(self.species + 1), size = int(20 * self.game.scale), color = white)
+        text = Text(
+            str(self.species + 1), size=int(20 * self.game.scale), color=white)
         text.rect.center = (self.x, self.y - int(20 * self.game.scale))
         self.text = Group((text))
-        
+
     def isOccupied(self):
         if len(self.prisoners.sprites()) == 0:
             return False
         return True
-    
+
     def vacate(self):
         if self.isOccupied():
             x = self.prisoners.sprites()[0]
             self.prisoners.remove(x)
             self.my_cell.prisoners.add(x)
-            
+
     def canHelp(self):
         return ((self.isOccupied() and self.HorF == "f") or
                 (not self.isOccupied() and self.HorF == "h"))
-            
+
     def escape(self, prisoner):
         self.escArea.addPrisoner(prisoner)
 
@@ -150,4 +160,3 @@ class Hideout():
             self.prisoners.add((prisoner))
         else:
             self.escape(prisoner)
-

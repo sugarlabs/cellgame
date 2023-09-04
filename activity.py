@@ -25,13 +25,11 @@ import sugargame.canvas
 from sugar3.activity import activity
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.widgets import ActivityToolbarButton
-from sugar3.graphics.toolbutton import ToolButton
 from sugar3.activity.widgets import StopButton
-from gettext import gettext as _
 import cells
 
-class Activity(activity.Activity):
 
+class Activity(activity.Activity):
     def __init__(self, handle):
         activity.Activity.__init__(self, handle)
 
@@ -46,7 +44,7 @@ class Activity(activity.Activity):
         self.build_toolbar()
 
     def build_toolbar(self):
-        
+
         toolbar_box = ToolbarBox()
         self.set_toolbar_box(toolbar_box)
         toolbar_box.show()
@@ -70,7 +68,6 @@ class Activity(activity.Activity):
 
     def read_file(self, file_path):
         pass
-        
+
     def write_file(self, file_path):
         pass
-
