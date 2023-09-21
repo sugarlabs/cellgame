@@ -30,9 +30,7 @@ import cursor
 
 from gettext import gettext as _
 
-###############################################################################
 # Game
-###############################################################################
 
 
 class Game():
@@ -60,9 +58,9 @@ class Game():
 
         self.screen = pygame.display.get_surface()
         if not (self.screen):
-            self.screen = pygame.display.set_mode((self.ScreenWidth,
-                                                   self.ScreenHeight),
-                                                  pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode(
+                (self.ScreenWidth, self.ScreenHeight),
+                pygame.FULLSCREEN)
 
         # time stuff
         self.clock = pygame.time.Clock()

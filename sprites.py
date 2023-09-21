@@ -19,9 +19,7 @@ import pygame
 from colors import red, yellow, black, grey, white
 from random import randint
 
-###############################################################################
 # the Super Group... because regular groups aren't good enough
-###############################################################################
 
 
 class Group(pygame.sprite.Group):
@@ -29,9 +27,7 @@ class Group(pygame.sprite.Group):
     def set_pos(self, x, y):
         self.x, self.y = x, y
 
-###############################################################################
 # Text Sprite
-###############################################################################
 
 
 class Text(pygame.sprite.Sprite):
@@ -43,9 +39,7 @@ class Text(pygame.sprite.Sprite):
         self.image = self.original.copy()
         self.rect = self.image.get_rect()
 
-###############################################################################
 # Moving Sprites are the way to go
-###############################################################################
 
 
 class MovingSprite(pygame.sprite.Sprite):
@@ -66,9 +60,7 @@ class MovingSprite(pygame.sprite.Sprite):
         dy = -math.sin(angle * math.pi / 180) * self.speed
         self.rect.move_ip(dx, dy)
 
-###############################################################################
 # The Prisoner
-###############################################################################
 
 
 class Prisoner(MovingSprite):
@@ -119,9 +111,9 @@ class Prisoner(MovingSprite):
         d = self.game.dist(m[0], m[1], self.rect.centerx, self.rect.centery)
         button1, button2, button3 = pygame.mouse.get_pressed()
         a = self.game.escArea.prisoners
-        if ((d <= int(20 * self.game.scale)) and
-            self in a.sprites() and not
-           self.game.guard.moving):
+        if (d <= int(20 * self.game.scale)) and \
+            self in a.sprites() and \
+                not self.game.guard.moving:
             self.image = self.selected_img.copy()
             self.text.draw(self.image)
             if (button1 or button2 or button3):
@@ -155,9 +147,7 @@ class Prisoner(MovingSprite):
         else:
             self.rect.center = (x, y)
 
-###############################################################################
 # The Guard
-###############################################################################
 
 
 class Guard(MovingSprite):

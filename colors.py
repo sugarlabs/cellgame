@@ -14,9 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Cells.  If not, see <http://www.gnu.org/licenses/>.
 
-###############################################################################
-# Colors
-###############################################################################
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)

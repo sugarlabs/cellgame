@@ -18,9 +18,7 @@ import pygame
 from sprites import Group, Text, Prisoner
 from colors import red, green, black, white
 
-###############################################################################
 # The Cells
-###############################################################################
 
 
 class Cell():
@@ -85,9 +83,8 @@ class Cell():
             self.prisoners.remove(prisoner)
             self.getMyHS().addPrisoner(prisoner)
 
-###############################################################################
+
 # The Escape Area
-###############################################################################
 
 
 class EscapeArea():
@@ -100,9 +97,7 @@ class EscapeArea():
     def addPrisoner(self, prisoner):
         self.prisoners.add(prisoner)
 
-###############################################################################
 # The Hideout
-###############################################################################
 
 
 class Hideout():
