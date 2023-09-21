@@ -199,8 +199,8 @@ class Game():
             text2.rect.topleft = (int(10 * self.scale), int(10 * self.scale))
             self.text = Group((text1, text2))
 
-            if (len(self.escArea.prisoners.sprites()) == self.cell_count
-               and not self.guard.moving):
+            if len(self.escArea.prisoners.sprites()) == self.cell_count and \
+                    not self.guard.moving:
                 pygame.time.wait(3000)
                 playing = False
 
@@ -285,8 +285,8 @@ class Game():
         f = Text(_("Press 'r' to reset the current game"),
                  size=t)
         f.rect.top = e.rect.bottom + 1
-        g = Text(_("Click here to exit help"), 
-                 size = t, color=(255, 0, 0))
+        g = Text(_("Click here to exit help"),
+                 size=t, color=(255, 0, 0))
         g.rect.top = f.rect.bottom + 1
         text = Group((a, b, c, d, e, f, g))
 
@@ -303,12 +303,13 @@ class Game():
                 if event.type == pygame.QUIT:
                     self.running = False
                 # and this one is for the "ESC" key
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                        helping = False
+                if event.type == pygame.KEYDOWN and \
+                        event.key == pygame.K_ESCAPE:
+                    helping = False
                 if event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = event.pos
                     if g.rect.collidepoint(mouse_pos):
-                        helping = False 
+                        helping = False
 
             pygame.display.flip()
 
@@ -330,7 +331,8 @@ class Game():
                 if event.type == pygame.QUIT:
                     self.running = False
                 # and this one is for the "ESC" key
-                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.KEYDOWN or \
+                        event.type == pygame.MOUSEBUTTONDOWN:
                     if self.cell_count == 2 and not self.new_game:
                         self.new_game = True
 
