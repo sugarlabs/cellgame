@@ -30,8 +30,6 @@ import cursor
 
 from gettext import gettext as _
 
-# Game
-
 
 class Game():
 
