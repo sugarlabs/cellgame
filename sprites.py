@@ -19,15 +19,11 @@ import pygame
 from colors import red, yellow, black, grey, white
 from random import randint
 
-# the Super Group... because regular groups aren't good enough
-
 
 class Group(pygame.sprite.Group):
     # We'll call it a quick fix; I meant to add more.
     def set_pos(self, x, y):
         self.x, self.y = x, y
-
-# Text Sprite
 
 
 class Text(pygame.sprite.Sprite):
@@ -38,8 +34,6 @@ class Text(pygame.sprite.Sprite):
         self.original = font.render(text, True, color)
         self.image = self.original.copy()
         self.rect = self.image.get_rect()
-
-# Moving Sprites are the way to go
 
 
 class MovingSprite(pygame.sprite.Sprite):
@@ -59,8 +53,6 @@ class MovingSprite(pygame.sprite.Sprite):
         dx = math.cos(angle * math.pi / 180) * self.speed
         dy = -math.sin(angle * math.pi / 180) * self.speed
         self.rect.move_ip(dx, dy)
-
-# The Prisoner
 
 
 class Prisoner(MovingSprite):
@@ -146,8 +138,6 @@ class Prisoner(MovingSprite):
             self.move(self.angle(x, y))
         else:
             self.rect.center = (x, y)
-
-# The Guard
 
 
 class Guard(MovingSprite):
