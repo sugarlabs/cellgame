@@ -1,0 +1,6 @@
+v5
+
+* Make flashing text in menu last longer (Dimitris Mylonas)
+* Add mouse support (Dimitris Mylonas)
+* Mouse click on welcomescreen now starts the game (Dimitris Mylonas)
+* Make pygame screen adjust to screen (Dimitris Mylonas)
