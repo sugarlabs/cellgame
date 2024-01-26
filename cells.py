@@ -68,6 +68,10 @@ class Game():
 
         # let's keep score
         self.move_count = 0
+        
+        pygame.mixer.music.load("assets/theme.ogg")
+        self.click_sound = pygame.mixer.Sound("assets/clicksound.ogg")
+        self.click_sound.set_volume(0.4)
 
     def dist(self, x1, y1, x2, y2):
         return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
@@ -207,6 +211,7 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = event.pos
+                    self.click_sound.play()
                     if text2.rect.collidepoint(mouse_pos):
                         self.help()
                 # this one is for the box in the top right marked X
@@ -304,6 +309,7 @@ class Game():
                     helping = False
                 if event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = event.pos
+                    self.click_sound.play()
                     if g.rect.collidepoint(mouse_pos):
                         helping = False
 
@@ -313,6 +319,7 @@ class Game():
         self.load_all()
         self.makeMenu()
         self.running = True
+        pygame.mixer.music.play(-1)
         count = 0
         while self.running:
             self.clock.tick(self.fps)
