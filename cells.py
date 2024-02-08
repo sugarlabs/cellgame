@@ -70,7 +70,7 @@ class Game():
         self.move_count = 0
         
         pygame.mixer.music.load("assets/theme.ogg")
-        self.click_sound = pygame.mixer.Sound("assets/clicksound.ogg")
+        self.click_sound = pygame.mixer.Sound("assets/click.ogg")
         self.click_sound.set_volume(0.4)
 
     def dist(self, x1, y1, x2, y2):
