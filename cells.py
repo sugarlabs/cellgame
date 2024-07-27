@@ -187,8 +187,8 @@ class Game():
 
     def gameloop(self):
         self.setupBoard()
-        playing = True
-        while playing:
+        self.playing = True
+        while self.playing:
             self.clock.tick(self.fps)
 
             text1 = Text(str(self.move_count),
@@ -202,7 +202,7 @@ class Game():
             if len(self.escArea.prisoners.sprites()) == self.cell_count and \
                     not self.guard.moving:
                 pygame.time.wait(3000)
-                playing = False
+                self.playing = False
 
             while Gtk.events_pending():
                 Gtk.main_iteration()
@@ -216,12 +216,12 @@ class Game():
                         self.help()
                 # this one is for the box in the top right marked X
                 if event.type == pygame.QUIT:
-                    playing, self.running = False, False
+                    self.playing, self.running = False, False
                 # and this one is for the "ESC" key
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.move_count = 0
-                        playing = False
+                        self.playing = False
                         self.makeMenu()
                         self.cell_count = 1
                     if event.key == pygame.K_r:
@@ -291,8 +291,8 @@ class Game():
         g.rect.top = f.rect.bottom + 1
         text = Group((a, b, c, d, e, f, g))
 
-        helping = True
-        while helping:
+        self.helping = True
+        while self.helping:
             self.screen.fill(white)
             text.draw(self.screen)
 
@@ -306,12 +306,12 @@ class Game():
                 # and this one is for the "ESC" key
                 if event.type == pygame.KEYDOWN and \
                         event.key == pygame.K_ESCAPE:
-                    helping = False
+                    self.helping = False
                 if event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = event.pos
                     self.click_sound.play()
                     if g.rect.collidepoint(mouse_pos):
-                        helping = False
+                        self.helping = False
 
             pygame.display.flip()
 

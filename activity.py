@@ -63,8 +63,14 @@ class Activity(activity.Activity):
         stop_button.props.accelerator = '<Ctrl>q'
         toolbar_box.toolbar.insert(stop_button, -1)
         stop_button.show()
+        stop_button.connect('clicked', self._stop_cb)
 
         self.show_all()
+
+    def _stop_cb(self, button):
+        self.game.running = False
+        self.game.helping = False
+        self.game.playing = False
 
     def read_file(self, file_path):
         pass
